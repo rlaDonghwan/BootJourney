@@ -1,5 +1,8 @@
 package com.BootJourney.Entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,8 +16,12 @@ public class Answer {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+    
+    private LocalDateTime createDate;
 
     // Question과의 N:1 관계 설정
     @ManyToOne
     private Question question;
+
+	public Integer getQuestion;
 }
