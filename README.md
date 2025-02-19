@@ -172,3 +172,317 @@ assertTrue(oa.isPresent());
 Answer a = oa.get();
 assertEquals(30, a.getQuestion().getId());
 ```
+<hr>
+다음은 요청한 내용을 정리한 Markdown 문서입니다.
+이제 그대로 복사해서 GitHub, Notion 등에 붙여넣으면 깔끔한 문서가 될 거야.
+
+# Spring Boot 게시판 프로젝트
+
+이 문서는 **Spring Boot를 이용한 게시판 프로젝트**에 대한 개요와 함께,  
+`Question`, `Answer` 엔티티의 **CRUD(생성, 조회, 수정, 삭제)** 기능과 **데이터 흐름**을 정리한 문서이다.
+
+---
+
+## 1. Spring Boot + Thymeleaf 데이터 바인딩 흐름
+
+### 1.1 컨트롤러 코드 (`/question/list` 요청 처리)
+
+```java
+package com.BootJourney.Controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.BootJourney.Service.QuestionService;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Controller
+public class QuestionController {
+    
+    private final QuestionService questionService;
+    
+    @GetMapping("/question/list")
+    public String list(Model model) {
+        List<Question> questionList = this.questionService.getList();
+        model.addAttribute("questionList", questionList);
+        return "question_list";
+    }
+}
+
+1.2 데이터 흐름
+
+1. 데이터 조회 (questionService.getList())
+	•	questionService.getList()를 호출하여 데이터베이스에서 모든 Question 데이터를 가져옴.
+	•	questionService는 questionRepository.findAll()을 실행하여 JPA를 통해 DB에서 데이터를 가져오는 역할을 수행한다.
+
+package com.BootJourney.Service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.BootJourney.Entity.Question;
+import com.BootJourney.Repository.QuestionRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class QuestionService {
+    
+    private final QuestionRepository questionRepository;
+    
+    public List<Question> getList(){
+        return this.questionRepository.findAll();
+    }
+}
+
+2. 데이터 모델에 추가 (model.addAttribute)
+
+model.addAttribute("questionList", questionList);
+
+	•	"questionList"라는 이름으로 데이터를 Thymeleaf 템플릿에 전달.
+	•	Thymeleaf에서는 ${questionList} 로 데이터를 접근할 수 있음.
+
+3. Thymeleaf 템플릿 호출 (return "question_list")
+
+return "question_list";
+
+	•	question_list.html이라는 Thymeleaf 템플릿을 렌더링하여 클라이언트에게 HTML을 반환.
+
+2. HTML (question_list.html)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>질문 목록</title>
+</head>
+<body>
+    <table>
+        <thead>
+        <tr>
+            <th>제목</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="question : ${questionList}">
+                <td th:text="${question.subject}"></td>
+                <td th:text="${question.createDate}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
+3. HTML 코드 설명
+
+3.1 반복문 (th:each)
+
+<tr th:each="question : ${questionList}">
+
+	•	questionList의 모든 요소를 하나씩 꺼내서 question 변수에 저장.
+	•	리스트의 개수만큼 <tr> 태그가 반복 생성됨.
+
+3.2 값 출력 (th:text)
+
+<td th:text="${question.subject}"></td>
+
+	•	question.subject 값을 <td> 태그 안에 출력.
+
+<td th:text="${question.createDate}"></td>
+
+	•	question.createDate 값을 <td> 태그 안에 출력.
+
+4. 최종 데이터 흐름 정리
+	1.	사용자가 /question/list URL을 요청
+	2.	QuestionController의 list() 메서드가 실행됨
+	3.	questionService.getList()가 호출되어 데이터베이스에서 데이터를 조회
+	4.	조회된 데이터를 model.addAttribute("questionList", questionList);를 통해 Thymeleaf에 전달
+	5.	question_list.html에서 th:each를 사용해 데이터를 반복 출력
+	6.	최종 HTML이 브라우저에서 렌더링됨
+
+5. Question & Answer: CRUD & Query 예시
+
+5.1 Question 엔티티
+
+1. 생성 (Create)
+
+Question q1 = new Question();
+q1.setSubject("sbb가 무엇인가요?");
+q1.setContent("sbb에 대해서 알고 싶습니다.");
+q1.setCreateDate(LocalDateTime.now());
+this.questionRepository.save(q1);
+
+Question q2 = new Question();
+q2.setSubject("스프링 부트 모델 질문입니다.");
+q2.setContent("id는 자동으로 생성되나요?");
+q2.setCreateDate(LocalDateTime.now());
+this.questionRepository.save(q2);
+
+2. 조회 (Read)
+
+// 모든 Question 조회
+List<Question> all = this.questionRepository.findAll();
+assertEquals(2, all.size());
+
+// 특정 ID 조회
+Optional<Question> oq = this.questionRepository.findById(1);
+assertTrue(oq.isPresent());
+Question q = oq.get();
+assertEquals("sbb가 무엇인가요?", q.getSubject());
+
+// 특정 필드값으로 조회
+Question q2 = this.questionRepository.findBySubject("sbb가 무엇인가요?");
+assertEquals(1, q2.getId());
+
+// 여러 필드로 조회
+Question q3 = this.questionRepository.findBySubjectAndContent(
+    "sbb가 무엇인가요?", 
+    "sbb에 대해서 알고 싶습니다."
+);
+assertNotNull(q3);
+
+3. 수정 (Update)
+
+Optional<Question> oq = this.questionRepository.findById(28);
+assertTrue(oq.isPresent());
+
+Question q2 = oq.get();
+q2.setSubject("수정된 제목");
+this.questionRepository.save(q2);
+
+4. 삭제 (Delete)
+
+assertEquals(2, this.questionRepository.count());
+
+Optional<Question> oq = this.questionRepository.findById(29);
+assertTrue(oq.isPresent());
+Question q = oq.get();
+this.questionRepository.delete(q);
+
+assertEquals(1, this.questionRepository.count());
+
+5. Like 조건 조회
+
+// subject가 "sbb"로 시작하는 Question 찾기
+List<Question> qList = this.questionRepository.findBySubjectLike("sbb%");
+assertFalse(qList.isEmpty());
+Question firstQ = qList.get(0);
+assertEquals("sbb가 무엇인가요?", firstQ.getSubject());
+
+6. Answer 엔티티
+
+1. 생성 (Create)
+
+Optional<Answer> oa = this.answerRepository.findById(1);
+assertTrue(oa.isPresent());
+Answer a = oa.get();
+assertEquals(30, a.getQuestion().getId());
+
+2. 조회 (Read)
+
+Optional<Answer> oa = this.answerRepository.findById(1);
+assertTrue(oa.isPresent());
+Answer a = oa.get();
+assertEquals(30, a.getQuestion().getId());
+
+7. 정리
+
+이 문서는 Spring Boot를 활용한 게시판 프로젝트의 개요와,
+Question 및 Answer 엔티티의 CRUD 및 데이터 바인딩 흐름을 정리한 자료이다.
+
+
+DTO와 VO의 차이점 이해하기
+
+소프트웨어 개발에서 DTO(Data Transfer Object)와 VO(Value Object)는 중요한 개념입니다. 그러나 많은 개발자들이 이 두 용어를 혼동하곤 합니다. 이 글에서는 DTO와 VO의 차이점을 명확히 이해하고, 실제 예시를 통해 그 차이를 설명하고자 합니다.
+
+DTO와 VO의 정의 및 차이점
+	•	DTO: 데이터 전송 객체로, 주로 데이터베이스와 애플리케이션 간의 데이터 전송을 위해 사용됩니다. 데이터베이스의 엔터티와 유사한 구조를 가지며, 데이터 전송을 목적으로 합니다.
+	•	VO: 값 객체로, 불변성을 가지며 주로 비즈니스 로직에서 사용됩니다. 값이 변경되지 않으며, 비즈니스 로직 내에서 의미 있는 값을 표현합니다.
+
+DTO의 예시: UserDTO
+
+DTO는 데이터 전송을 목적으로 하며, 데이터베이스의 엔터티와 유사한 구조를 가집니다. 예를 들어, UserDTO는 사용자 정보를 전송하기 위한 DTO입니다. 이 DTO는 사용자 이름, 이메일, 비밀번호 등의 정보를 포함할 수 있습니다.
+
+public class UserDTO {
+    private String name;
+    private String email;
+    private String password;
+
+    // Getters and Setters
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
+
+VO의 예시: Money
+
+VO는 값 객체로, 불변성을 가지며 주로 비즈니스 로직에서 사용됩니다. 예를 들어, Money는 금액을 나타내는 VO입니다. 이 VO는 금액과 통화를 포함하며, 생성 시에만 값이 설정되고 이후에는 변경되지 않습니다.
+
+public class Money {
+    private final BigDecimal amount;
+    private final Currency currency;
+
+    public Money(BigDecimal amount, Currency currency) {
+        this.amount = amount;
+        this.currency = currency;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+}
+
+DTO와 VO의 통합 사용
+
+DTO와 VO는 종종 함께 사용됩니다. 예를 들어, 애플리케이션에서 사용자 정보를 전송할 때 UserDTO를 사용하고, 금액을 나타낼 때 Money VO를 사용할 수 있습니다. 이 경우, UserDTO는 데이터 전송을 목적으로 하며, Money VO는 비즈니스 로직에서 사용됩니다.
+
+public class UserService {
+    public void createUser(UserDTO userDTO) {
+        // UserDTO를 사용하여 사용자 생성
+    }
+
+    public Money calculateTotalAmount(List<Money> amounts) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (Money amount : amounts) {
+            total = total.add(amount.getAmount());
+        }
+        return new Money(total, Currency.getInstance("USD"));
+    }
+}
+
+결론
+
+DTO와 VO는 소프트웨어 개발에서 매우 중요한 개념입니다. DTO는 데이터 전송을 목적으로 하며, 데이터베이스의 엔터티와 유사한 구조를 가지는 반면, VO는 불변성을 가지며 주로 비즈니스 로직에서 사용됩니다. 이 두 개념을 명확히 이해하면 소프트웨어 개발이 더 효율적이고 간편해집니다.

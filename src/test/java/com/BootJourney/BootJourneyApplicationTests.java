@@ -18,6 +18,8 @@ import com.BootJourney.Entity.Question;
 import com.BootJourney.Repository.AnswerRepository;
 import com.BootJourney.Repository.QuestionRepository;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 class BootJourneyApplicationTests {
 
@@ -27,7 +29,7 @@ class BootJourneyApplicationTests {
 	@Autowired
 	private AnswerRepository answerRepository;
 		
-	
+	@Transactional
 	@Test 
 	void testJpa() { 
 		
@@ -101,10 +103,27 @@ class BootJourneyApplicationTests {
 //		assertEquals(30, a.getQuestion().getId());
 		
 		
+		Optional<Question> oq = this.questionRepository.findById(30);
+		assertTrue(oq.isPresent());
+		Question q = oq.get();
 		
+		List<Answer> answerList = q.getAnswerList();
 		
+		assertEquals(1, answerList.size());
+		assertEquals("네 자동으로 생성됩니다.", answerList.get(0).getContent());
 		
 		
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
