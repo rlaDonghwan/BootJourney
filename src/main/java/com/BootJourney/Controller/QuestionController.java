@@ -14,8 +14,11 @@ import com.BootJourney.Repository.QuestionRepository;
 import com.BootJourney.Service.QuestionService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 @RequiredArgsConstructor
 @Controller
+@RequestMapping("/question")
 public class QuestionController {
 	
 	private final QuestionService questionService;
@@ -24,19 +27,18 @@ public class QuestionController {
 //		this.questionRepository = questionRepository;
 //	}
 	
-	@GetMapping("/question/list")
+	@GetMapping("/list")
 	public String list(Model model){
-		List<Question> questionList = this.questionService.getList();
-		model.addAttribute("questionList",questionList);
-		return "question_list";
+		List<Question> questionList = this.questionService.getList(); //서비스에서 getList 메서드 호출
+		model.addAttribute("questionList",questionList); //뷰에다가 질문목록 이라는 명으로 값을 던져줌
+		return "question_list"; //호출
 	}
 	
-	@GetMapping(value = "/question/detail/{id}")
+	@GetMapping("/detail/{id}")
 	public String detail(Model model, @PathVariable("id") Integer id) throws DataNotFoundException {
 		Question question = this.questionService.getQuestion(id);
 		model.addAttribute("question",question);
 		return "question_detail";
-
 	}
 
 

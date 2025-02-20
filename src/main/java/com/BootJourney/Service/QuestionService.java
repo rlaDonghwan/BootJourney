@@ -19,7 +19,7 @@ public class QuestionService {
 	
 	public List<Question> getList(){
 		return this.questionRepository.findAll();
-	}
+	} // 질문 디비에 있는 모든값을 리스트 형식으로 가져옴
 	
 	public Question getQuestion(Integer id) throws DataNotFoundException {
 		Optional<Question> question = this.questionRepository.findById(id);

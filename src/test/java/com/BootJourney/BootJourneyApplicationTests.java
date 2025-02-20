@@ -39,7 +39,7 @@ class BootJourneyApplicationTests {
 //	    q1.setContent("sbb에 대해서 알고 싶습니다.");     // q1의 'content' 필드에 "sbb에 대해서 알고 싶습니다." 라는 값을 설정
 //	    q1.setCreateDate(LocalDateTime.now());      // q1의 'createDate' 필드를 현재 시각으로 설정
 //	    this.questionRepository.save(q1);           // q1 객체를 DB에 저장
-//	    
+
 //	    Question q2 = new Question();              // 또 다른 Question 엔티티 객체 q2 생성
 //	    q2.setSubject("스프링 부트 모델 질문입니다.");    // q2의 'subject' 필드에 값 설정
 //	    q2.setContent("id는 자동으로 생성되나요?");      // q2의 'content' 필드에 값 설정
@@ -86,15 +86,15 @@ class BootJourneyApplicationTests {
 		
 		//Answer------------------------------------------------------------------------------------------------------------------------------
 		//Create 데이터 생성
-//		Optional<Question> oq = this.questionRepository.findById(30);
-//		assertTrue(oq.isPresent());
-//		Question q = oq.get();
-//		
-//		Answer a = new Answer();
-//		a.setContent("네 자동으로 생성됩니다.");
-//		a.setQuestion(q);
-//		a.setCreateDate(LocalDateTime.now());
-//		this.answerRepository.save(a);
+		Optional<Question> oq = this.questionRepository.findById(1);
+		assertTrue(oq.isPresent());
+		Question q = oq.get();
+
+		Answer a = new Answer();
+		a.setContent("네 자동으로 생성됩니다.");
+		a.setQuestion(q);
+		a.setCreateDate(LocalDateTime.now());
+		this.answerRepository.save(a);
 		
 //		조회 Read
 //		Optional<Answer> oa = this.answerRepository.findById(1);
@@ -103,14 +103,14 @@ class BootJourneyApplicationTests {
 //		assertEquals(30, a.getQuestion().getId());
 		
 		
-		Optional<Question> oq = this.questionRepository.findById(30);
-		assertTrue(oq.isPresent());
-		Question q = oq.get();
-		
-		List<Answer> answerList = q.getAnswerList();
-		
-		assertEquals(1, answerList.size());
-		assertEquals("네 자동으로 생성됩니다.", answerList.get(0).getContent());
+//		Optional<Question> oq = this.questionRepository.findById(30);
+//		assertTrue(oq.isPresent());
+//		Question q = oq.get();
+//
+//		List<Answer> answerList = q.getAnswerList();
+//
+//		assertEquals(1, answerList.size());
+//		assertEquals("네 자동으로 생성됩니다.", answerList.get(0).getContent());
 		
 		
 	}
