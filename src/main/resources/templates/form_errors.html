@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+</head>
+<body>
+
+<!-- 전체 폼 에러를 출력하는 fragment -->
+<th:block th:fragment="form_errorsFragment">
+  <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors()}">
+    <ul class="mb-0">
+      <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+    </ul>
+  </div>
+</th:block>
+
+<!-- 개별 필드 에러 메시지를 출력하는 fragment -->
+<th:block th:fragment="fieldError(fieldName)">
+  <div th:if="${#fields.hasErrors(fieldName)}" class="text-danger small mt-1">
+    <span th:errors="*{__${fieldName}__}"></span>
+  </div>
+</th:block>
+
+</body>
+</html>

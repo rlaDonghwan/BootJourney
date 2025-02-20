@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.BootJourney.Service.QuestionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,8 +29,10 @@ class BootJourneyApplicationTests {
 	
 	@Autowired
 	private AnswerRepository answerRepository;
-		
-	@Transactional
+
+	@Autowired
+	private QuestionService questionService;
+
 	@Test 
 	void testJpa() { 
 		
@@ -86,15 +89,15 @@ class BootJourneyApplicationTests {
 		
 		//Answer------------------------------------------------------------------------------------------------------------------------------
 		//Create 데이터 생성
-		Optional<Question> oq = this.questionRepository.findById(1);
-		assertTrue(oq.isPresent());
-		Question q = oq.get();
-
-		Answer a = new Answer();
-		a.setContent("네 자동으로 생성됩니다.");
-		a.setQuestion(q);
-		a.setCreateDate(LocalDateTime.now());
-		this.answerRepository.save(a);
+//		Optional<Question> oq = this.questionRepository.findById(1);
+//		assertTrue(oq.isPresent());
+//		Question q = oq.get();
+//
+//		Answer a = new Answer();
+//		a.setContent("네 자동으로 생성됩니다.");
+//		a.setQuestion(q);
+//		a.setCreateDate(LocalDateTime.now());
+//		this.answerRepository.save(a);
 		
 //		조회 Read
 //		Optional<Answer> oa = this.answerRepository.findById(1);
@@ -111,8 +114,13 @@ class BootJourneyApplicationTests {
 //
 //		assertEquals(1, answerList.size());
 //		assertEquals("네 자동으로 생성됩니다.", answerList.get(0).getContent());
-		
-		
+
+		for(int i=1;i<=300; i++){
+			String subject = String.format("테스트 데이터 입니다:[%03d]",i);
+			String content = "내용 없음";
+			this.questionService.create(subject,content);
+		}
+
 	}
 
 }

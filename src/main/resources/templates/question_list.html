@@ -1,28 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">  <!-- ✅ 부모 레이아웃 적용 -->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>질문 목록</title>
 </head>
 <body>
-<table>
-    <thead>
-    <tr>
-        <th>제목</th>
-        <th>작성일시</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tbody>
-    <tr th:each="question : ${questionList}">
-        <td>
-            <a th:href="@{|/question/detail/${question.id}|}"
-               th:text="${question.subject}"></a>
-        </td>
-        <td th:text="${question.createDate}"></td>
-    </tr>
-    </tbody>
-</table>
+
+<!-- ✅ 부모 템플릿(layout.html)의 content 영역을 덮어쓰는 부분 -->
+<div layout:fragment="content" class="container my-4">
+    <h1 class="mb-4">질문 목록</h1>
+
+    <table class="table table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- thymeleaf를 사용할 경우, th:each로 반복 -->
+        <tr th:each="question, loop : ${questionList}">
+            <td th:text="${loop.count}"></td>
+            <td>
+                <a
+                        th:href="@{|/question/detail/${question.id}|}"
+                        th:text="${question.subject}"></a>
+            </td>
+            <td th:text="${#temporals.format(question.createDate,'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- ✅ "질문 등록하기" 버튼 유지 -->
+    <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+</div>
+
 </body>
 </html>

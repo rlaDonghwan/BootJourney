@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body>
     <h1 th:text="${question.subject}"></h1>
@@ -17,8 +18,9 @@
         </ul>
     </div>
     <form th:action="@{|/answer/create/${question.id}|}" method="post">
+        <div th:replace="~{form_errors :: form_errorsFragment}"></div>
         <textarea name="content" id = "content" rows="15"></textarea>
-        <input  type="submit" value="답변등록">
+        <input  type="submit" value="답변등록" class="btn btn-primary">
     </form>
 </body>
 </html>

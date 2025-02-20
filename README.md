@@ -151,4 +151,50 @@ public class Money {
 
 ---
 
+---
+
+##  `@PathVariable` vs `@RequestParam`
+
+###  `@PathVariable`
+- **URL 경로에서 값을 추출할 때 사용**
+- **RESTful API에서 리소스를 식별하는 경우 적합**
+- **주로 `GET`, `PUT`, `DELETE` 요청에서 사용**
+
+```java
+@GetMapping("/users/{id}")
+public String getUser(@PathVariable("id") Long userId) {
+    return "User ID: " + userId;
+}
+```
+### 요청 예시: GET /users/10 
+결과: "User ID: 10"
+- @RequestParam
+	•	쿼리 스트링(Query String) 방식으로 데이터를 전달
+	•	필터링, 정렬 등의 추가 정보 전달 시 사용
+	•	주로 GET 요청에서 사용, POST에서는 비효율적
+```java
+@GetMapping("/users")
+public String getUser(@RequestParam("id") Long userId) {
+    return "User ID: " + userId;
+}
+```
+- 요청 예시: GET /users?id=10
+- 결과: "User ID: 10"
+
+```java
+@RequestBody (POST 요청)
+	•	요청 Body에서 JSON 데이터를 직접 매핑
+	•	POST, PUT, PATCH 요청에서 사용
+	•	@PathVariable, @RequestParam보다 더 많이 사용됨
+```
+
+```java
+@PostMapping("/users")
+public String createUser(@RequestBody UserDTO user) {
+    return "Created User: " + user.getName();
+}
+```
+
+
+
 

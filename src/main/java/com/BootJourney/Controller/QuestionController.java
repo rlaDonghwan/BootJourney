@@ -3,18 +3,19 @@ package com.BootJourney.Controller;
 import java.util.List;
 
 import com.BootJourney.Exception.DataNotFoundException;
+import com.BootJourney.Form.QuestionForm;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import com.BootJourney.Entity.Question;
 import com.BootJourney.Repository.QuestionRepository;
 import com.BootJourney.Service.QuestionService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
 @Controller
@@ -41,6 +42,20 @@ public class QuestionController {
 		return "question_detail";
 	}
 
+	@GetMapping("/create")
+	public String questionCreate(Model model){
+		model.addAttribute("questionForm",new QuestionForm());
+		return "question_form";
+	}
+
+	@PostMapping("/create")
+	public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult){ //폼객체를 통해 값을 받고 bindingResult가 검증
+		if(bindingResult.hasErrors()){
+			return "question_form";
+		}
+		this.questionService.create(questionForm.getSubject(),questionForm.getContent());
+		return "redirect:/question/list"; //질문 저장 후 질문 목록으로 이동
+	}
 
 	
 }
