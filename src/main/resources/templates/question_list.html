@@ -23,18 +23,45 @@
         </tr>
         </thead>
         <tbody>
-        <!-- thymeleaf를 사용할 경우, th:each로 반복 -->
-        <tr th:each="question, loop : ${questionList}">
-            <td th:text="${loop.count}"></td>
+        <!-- ✅ 페이징된 데이터 표시 (paging.content로 순회) -->
+        <tr th:each="question, loop : ${paging.content}">
+            <td th:text="${loop.count + (paging.number * paging.size)}"></td>
             <td>
-                <a
-                        th:href="@{|/question/detail/${question.id}|}"
-                        th:text="${question.subject}"></a>
+                <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
             </td>
-            <td th:text="${#temporals.format(question.createDate,'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
         </tbody>
     </table>
+
+    <!-- ✅ 페이징 처리 시작 -->
+    <div th:if="${!paging.isEmpty()}">
+        <ul class="pagination justify-content-center">
+
+            <!-- 이전 페이지 -->
+            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                <a class="page-link" th:href="@{|?page=${paging.number-1}|}">
+                    <span>이전</span>
+                </a>
+            </li>
+
+            <!-- 페이지 번호 목록 -->
+            <li th:each="page : ${#numbers.sequence(0, paging.totalPages-1)}"
+                th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                class="page-item" th:classappend="${page == paging.number} ? 'active'">
+                <a class="page-link" th:href="@{|?page=${page}|}" th:text="${page+1}"></a>
+            </li>
+
+            <!-- 다음 페이지 -->
+            <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+                <a class="page-link" th:href="@{|?page=${paging.number+1}|}">
+                    <span>다음</span>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+    <!-- ✅ 페이징 처리 끝 -->
 
     <!-- ✅ "질문 등록하기" 버튼 유지 -->
     <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>

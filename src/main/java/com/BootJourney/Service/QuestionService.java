@@ -1,10 +1,15 @@
 package com.BootJourney.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.BootJourney.Exception.DataNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.BootJourney.Entity.Question;
@@ -40,4 +45,10 @@ public class QuestionService {
 
 	}
 
+	public Page<Question> getList(int page){
+		List<Sort.Order> sorts = new ArrayList<>();
+		sorts.add(new Sort.Order(Sort.Direction.DESC,"createDate"));
+		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+		return this.questionRepository.findAll(pageable);
+	}
 }
