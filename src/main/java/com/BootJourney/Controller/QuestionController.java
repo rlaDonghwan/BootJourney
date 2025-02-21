@@ -3,6 +3,7 @@ package com.BootJourney.Controller;
 import java.util.List;
 
 import com.BootJourney.Exception.DataNotFoundException;
+import com.BootJourney.Form.AnswerForm;
 import com.BootJourney.Form.QuestionForm;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,30 +30,25 @@ public class QuestionController {
 //		this.questionRepository = questionRepository;
 //	}
 
-//	@GetMapping("/list")
-//	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page){
-//		Page<Question> paging = this.questionService.getList(page);
-//		model.addAttribute("paging",paging);
-//
-////		List<Question> questionList = this.questionService.getList(); //서비스에서 getList 메서드 호출
-////		model.addAttribute("questionList",questionList); //뷰에다가 질문목록 이라는 명으로 값을 던져줌
-//		return "question_list"; //호출
-//	}
-
 	@GetMapping("/list")
 	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
 		Page<Question> paging = this.questionService.getList(page);
 		model.addAttribute("paging", paging);
 		return "question_list";
 	}
-	
-	@GetMapping("/detail/{id}")
-	public String detail(Model model, @PathVariable("id") Integer id) throws DataNotFoundException {
-		Question question = this.questionService.getQuestion(id);
-		model.addAttribute("question",question);
-		return "question_detail";
-	}
 
+	@GetMapping("/detail/{id}")
+	public String questionDetail(@PathVariable("id") Integer id, Model model) {
+		try {
+			Question question = questionService.getQuestion(id);
+			model.addAttribute("question", question);
+			model.addAttribute("answerForm", new AnswerForm()); // ✅ answerForm 추가
+
+			return "question_detail";
+		} catch (DataNotFoundException e) {
+			return "redirect:/"; // ❗ 존재하지 않는 질문이면 홈으로 리디렉트
+		}
+	}
 	@GetMapping("/create")
 	public String questionCreate(Model model){
 		model.addAttribute("questionForm",new QuestionForm());

@@ -1,30 +1,52 @@
-<!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">  <!-- ✅ 부모 레이아웃 적용 -->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-</head>
-<body>
-<h1 th:text="${question.subject}"></h1>
-<div th:text="${question.content}"></div>
-<h5 th:text="|${#lists.size(question.answerList)}개 답변이 있습니다.|"></h5>
-<div>
-    <ul>
-        <li th:each="answer : ${question.answerList}">
-            <div th:text="${answer.content}"></div>
-        </li>
-    </ul>
+<html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="content" class="container my-3">
+    <!--질문-->
+    <h2 class="border-bottem py-2" th:text="${question.subject}"></h2>
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;"
+                 th:text="${question.content}"></div>
+            <div class="d-flex justify-content-end">
+                <div class="badge bg-light text-dark p-2 text-start">
+                    <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--답변 개수 표시-->
+    <h5 class="border-bottom my-3 py-2" th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
+
+    <!--답변 반복 시작-->
+    <div class="card my-3" th:each="answer : ${question.answerList}">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;"
+                 th:text="${answer.content}"></div>
+            <div class="d-flex justify-content-end">
+                <div class="badge bg-light text-dark p-2 text-start">
+                    <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--답변 반복 끝-->
+
+    <!--답변 작성-->
+    <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="my-3">
+
+        <!-- ✅ 폼 전체 오류 메시지 -->
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
+        <!-- ✅ 답변 입력 필드 -->
+        <div class="mb-3">
+            <label for="content" class="form-label">답변 내용</label>
+            <textarea id="content" th:field="*{content}" rows="10" class="form-control" placeholder="답변을 입력하세요."></textarea>
+
+            <!-- ✅ 개별 필드 오류 메시지 -->
+            <div th:replace="~{form_errors :: fieldError('content')}"></div>
+        </div>
+
+        <input type="submit" value="답변 등록" class="btn btn-primary my-2">
+    </form>
 </div>
-<form th:action="@{|/answer/create/${question.id}|}" method="post" th:object="${answerForm}">
-    <!-- form_errors 프래그먼트에서 th:object가 필요할 경우를 대비하여 추가 -->
-<!--    <div th:replace="~{form_errors :: form_errorsFragment}"></div>-->
-    <textarea name="content" id="content" rows="15"></textarea>
-    <input type="submit" value="답변등록" class="btn btn-primary">
-</form>
-</body>
 </html>

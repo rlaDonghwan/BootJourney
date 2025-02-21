@@ -5,16 +5,14 @@
 </head>
 <body>
 
-<!-- 전체 폼 에러를 출력하는 fragment -->
-<th:block th:fragment="form_errorsFragment">
-  <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors()}">
-    <ul class="mb-0">
-      <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
-    </ul>
+<!-- 전체 폼 오류 메시지를 출력하는 Fragment -->
+<th:block th:fragment="formErrorsFragment">
+  <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+    <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
   </div>
 </th:block>
 
-<!-- 개별 필드 에러 메시지를 출력하는 fragment -->
+<!-- 개별 필드 오류 메시지를 출력하는 Fragment -->
 <th:block th:fragment="fieldError(fieldName)">
   <div th:if="${#fields.hasErrors(fieldName)}" class="text-danger small mt-1">
     <span th:errors="*{__${fieldName}__}"></span>
