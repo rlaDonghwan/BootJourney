@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8"/>
+    <meta charset="UTF-8"/>
 </head>
 <body>
 
 <!-- 전체 폼 오류 메시지를 출력하는 Fragment -->
 <th:block th:fragment="formErrorsFragment">
-  <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
-    <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
-  </div>
+    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+    </div>
 </th:block>
 
 <!-- 개별 필드 오류 메시지를 출력하는 Fragment -->
 <th:block th:fragment="fieldError(fieldName)">
-  <div th:if="${#fields.hasErrors(fieldName)}" class="text-danger small mt-1">
-    <span th:errors="*{__${fieldName}__}"></span>
-  </div>
+    <div th:if="${#fields.hasErrors(fieldName)}" class="text-danger small mt-1">
+        <span th:errors="*{__${fieldName}__}"></span>
+    </div>
 </th:block>
 
 </body>

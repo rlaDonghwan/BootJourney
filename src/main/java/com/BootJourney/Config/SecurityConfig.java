@@ -17,9 +17,11 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
-                );
-
+                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+                .formLogin((formLogin) ->
+                        formLogin.loginPage("/user/login")
+                                .defaultSuccessUrl("/"));
+        
         return http.build();
     }
 

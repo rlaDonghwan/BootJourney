@@ -16,36 +16,35 @@
     </div>
 
     <form th:action="@{/user/signup}" th:object="${userCreateForm}" method="post">
-        <div th:replace="~{form_errors :: form_errorsFragment}"></div>
+        <!-- 전체 폼 오류 메시지 -->
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
         <div class="mb-3">
             <label for="username" class="form-label">사용자 ID</label>
             <input type="text" id="username" th:field="*{username}" class="form-control">
+            <div th:replace="~{form_errors :: fieldError('username')}"></div>  <!-- ✅ 필드 오류 메시지 -->
         </div>
 
         <div class="mb-3">
             <label for="password1" class="form-label">비밀번호</label>
             <input type="password" id="password1" th:field="*{password1}" class="form-control">
+            <div th:replace="~{form_errors :: fieldError('password1')}"></div>
         </div>
 
         <div class="mb-3">
             <label for="password2" class="form-label">비밀번호 확인</label>
             <input type="password" id="password2" th:field="*{password2}" class="form-control">
+            <div th:replace="~{form_errors :: fieldError('password2')}"></div>
         </div>
 
         <div class="mb-3">
             <label for="email" class="form-label">이메일</label>
             <input type="text" id="email" th:field="*{email}" class="form-control">
+            <div th:replace="~{form_errors :: fieldError('email')}"></div>
         </div>
 
         <button type="submit" class="btn btn-primary">회원 가입</button>
     </form>
-
-
-
-
-
 </div>
-
-
 </body>
 </html>
