@@ -195,6 +195,31 @@ public String createUser(@RequestBody UserDTO user) {
 }
 ```
 
+###  스프링 시큐리티
+- 스프링 시큐리티는 스프링 기반 웹 애플리케이션의 인증과 권한을 담당하는 스프링의 하위 프레임워크이다. 여기서 인증은 로그인과 같은 사용자의 신원을 확인하는 프로세스를, 권한은 인증된 사용자가 어떤 일을 할 수 있는지(어떤 접근 권한이 있는지) 관리하는 것을 의미한다.
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests.
+                        requestMatchers(new AntPathRequestMatcher("/**")).permitAll());
+        return http.build();
+    }
+
+}
+```
+@Configuration은 이 파일이 스프링 환경 설정 파일임을 의미하는 어노테이션이다.
+@EnableWebSecurity는 모든 요청 URL이 스프링 시큐리티를 활성화하는 역할을 한다. 내부적으로 SecurityFilterChain 클래스가 동작하여 모든 요청 URL에 이 클래스가 필터로 적용되어 URL 별로 특별한 설정을 할 수 있게 된다.
+@Bean을 통해 SecurityFilterChain을 세부 설정 할 수 있다.
+
+#### 빈?
+- 빈은 스프링에 의해 생성 또는 관리되는 객체를 의미함. 우리가 지금껏 만들어왔던 컨트로러,서비스, 레파지토리 등도 모두 빈에 해당한다. @Bean 어노테이션을 통해 자바 코드 내에서 별도로 빈을 정의하고 등록할 수도 있다.
+
+#### CSRF
+- 웹 보안 공격중 하나로 조작된 정보로 웹 사이트가 실행되도록 속이는 공격 기술. 스프링 시큐리티는 이러한 공격을 방지하기 위해 CSRF 토큰을 새션을 통해 발행하고, 웹 페이지에서는 폼 전송 시에 해당 토큰을 함께 전송하여 실제 웹 페이지에서 작성한 데이터가 전달 되는지를 점증한다.
 
 
 

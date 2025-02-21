@@ -25,9 +25,13 @@
         <tbody>
         <!-- ✅ 페이징된 데이터 표시 (paging.content로 순회) -->
         <tr th:each="question, loop : ${paging.content}">
-            <td th:text="${loop.count + (paging.number * paging.size)}"></td>
+            <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
             <td>
                 <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+                <span class="text-danger small ms-2"
+                th:if="${#lists.size(question.answerList) > 0}"
+                      th:text="${#lists.size(question.answerList)}">
+                ></span>
             </td>
             <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
