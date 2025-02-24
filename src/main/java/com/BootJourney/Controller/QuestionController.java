@@ -32,9 +32,10 @@ public class QuestionController {
 
     // 질문 목록을 조회하는 메서드
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Question> paging = this.questionService.getList(page); // 페이지네이션된 질문 목록 조회
+    public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
+        Page<Question> paging = this.questionService.getList(page, kw); // 페이지네이션된 질문 목록 조회
         model.addAttribute("paging", paging); // 모델에 데이터 추가
+        model.addAttribute("kw", kw);
         return "question_list"; // question_list.html 뷰 반환
     }
 

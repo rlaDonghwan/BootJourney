@@ -282,3 +282,7 @@ Authentication	현재 로그인한 사용자의 정보(Principal), 권한(Role) 
 •	Principal은 SecurityContext에서 로그인한 사용자 정보를 쉽게 가져오는 역할을 함.
 •	컨트롤러에서 Principal을 사용하면, 로그인한 사용자의 username 등을 편리하게 가져올 수 있음.
 
+
+@Component
+- 컴포넌트는 앱 실행시 해당 클래스를 자동으로 감지하고, Bean으로 등록하여 의존성 주입이 가능하게 한다.
+- 기존에는 @Bean을 사용해 @Configuration 클래스 내에서 수동으로 등록했어야 하지만 @Component를 사용하면 Spring이 자동으로 등록해 준다.
