@@ -28,6 +28,10 @@
                 </div>
             </div>
             <div class="my-3">
+                <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+                   th:data-uri="@{|/question/vote/${question.id}|}">
+                    추천 <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voter)}"></span>
+                </a>
                 <a th:href="@{|/question/modify/${question.id}|}"
                    class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
@@ -59,7 +63,12 @@
                 </div>
             </div>
             <div class="my-3">
-                <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
+                <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+                   th:data-uri="@{|/answer/vote/${answer.id}|}">
+                    추천 <span class="badge rounded-pill bg-success" th:text="${#lists.size(answer.voter)}"></span>
+                </a>
+                <a th:href="@{|/answer/modify/${answer.id}|}"
+                   class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
                    th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
                    th:text="수정"></a>
@@ -91,6 +100,14 @@
     document.querySelectorAll(".delete").forEach(function (element) {
         element.addEventListener('click', function () {
             if (confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            }
+        });
+    });
+
+    document.querySelectorAll(".recommend").forEach(function (element) {
+        element.addEventListener('click', function () {
+            if (confirm("정말로 추천하시겠습니까?")) {
                 location.href = this.dataset.uri;
             }
         });

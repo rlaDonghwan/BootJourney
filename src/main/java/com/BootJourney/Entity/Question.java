@@ -2,6 +2,7 @@ package com.BootJourney.Entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,6 +31,9 @@ public class Question {
     private User author;
 
     private LocalDateTime modifyDate;
+
+    @ManyToMany
+    Set<User> voter;
 
 
 }

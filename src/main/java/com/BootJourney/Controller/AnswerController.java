@@ -95,5 +95,14 @@ public class AnswerController {
 
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote{id}")
+    public String answerVote(Principal principal, @PathVariable("id") Integer id) throws DataNotFoundException {
+        Answer answer = this.answerService.getAnswer(id);
+        User user = this.userService.getUser(principal.getName());
+        this.answerService.vote(answer, user);
+        return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+    }
+
 
 }

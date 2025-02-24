@@ -117,4 +117,15 @@ public class QuestionController {
         this.questionService.delete(question); // 질문 삭제
         return "redirect:/"; // 삭제 후 홈으로 리디렉트
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String questionVote(Principal principal, @PathVariable("id") Integer id) throws DataNotFoundException {
+        Question question = this.questionService.getQuestion(id);
+        User user = this.userService.getUser(principal.getName());
+        this.questionService.vote(question, user);
+        return String.format("redirect:/question/detail/%s", id);
+
+    }
+
 }
