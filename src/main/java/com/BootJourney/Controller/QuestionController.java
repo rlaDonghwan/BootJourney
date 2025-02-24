@@ -1,7 +1,6 @@
 package com.BootJourney.Controller;
 
 import java.security.Principal;
-import java.util.List;
 
 import com.BootJourney.Entity.User;
 import com.BootJourney.Exception.DataNotFoundException;
@@ -9,7 +8,6 @@ import com.BootJourney.Form.AnswerForm;
 import com.BootJourney.Form.QuestionForm;
 import com.BootJourney.Service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
