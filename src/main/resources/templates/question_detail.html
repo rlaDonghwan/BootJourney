@@ -1,5 +1,5 @@
 <html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div layout:fragment="content" class="container my-3">
     <!--질문-->
     <h2 class="border-bottem py-2" th:text="${question.subject}"></h2>
@@ -9,6 +9,10 @@
                  th:text="${question.content}"></div>
             <div class="d-flex justify-content-end">
                 <div class="badge bg-light text-dark p-2 text-start">
+                    <div class = "mb-2">
+                        <span th:if="${question.author != null}"
+                              th:text="${question.author.username}"></span>
+                    </div>
                     <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
             </div>
@@ -25,6 +29,10 @@
                  th:text="${answer.content}"></div>
             <div class="d-flex justify-content-end">
                 <div class="badge bg-light text-dark p-2 text-start">
+                    <div class = "mb-2">
+                        <span th:if="${question.author != null}"
+                              th:text="${question.author.username}"></span>
+                    </div>
                     <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
             </div>
@@ -33,6 +41,7 @@
     <!--답변 반복 끝-->
 
     <!--답변 작성-->
+    <!-- 답변 작성 -->
     <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="my-3">
 
         <!-- ✅ 폼 전체 오류 메시지 -->
@@ -41,13 +50,23 @@
         <!-- ✅ 답변 입력 필드 -->
         <div class="mb-3">
             <label for="content" class="form-label">답변 내용</label>
-            <textarea id="content" th:field="*{content}" rows="10" class="form-control" placeholder="답변을 입력하세요."></textarea>
+
+            <!-- ✅ 비로그인 사용자: 입력 불가능 (비활성화된 textarea) -->
+            <textarea sec:authorize="isAnonymous()" disabled
+                      id="content" th:field="*{content}" rows="10"
+                      class="form-control" placeholder="로그인 후 답변을 입력할 수 있습니다."></textarea>
+
+            <!-- ✅ 로그인 사용자: 입력 가능 -->
+            <textarea sec:authorize="isAuthenticated()"
+                      id="content" th:field="*{content}" rows="10"
+                      class="form-control" placeholder="답변을 입력하세요."></textarea>
 
             <!-- ✅ 개별 필드 오류 메시지 -->
             <div th:replace="~{form_errors :: fieldError('content')}"></div>
         </div>
 
-        <input type="submit" value="답변 등록" class="btn btn-primary my-2">
+        <!-- ✅ 로그인 사용자만 답변 등록 버튼 표시 -->
+        <input sec:authorize="isAuthenticated()" type="submit" value="답변 등록" class="btn btn-primary my-2">
     </form>
 </div>
 </html>

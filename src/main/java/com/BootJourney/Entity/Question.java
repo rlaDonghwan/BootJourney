@@ -25,4 +25,9 @@ public class Question {
     // Answer와의 1:N 관계 설정
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList; //Answer객체 리스트를 통해 조인된 테이블 값을 리스트로 호출 가능
+
+    @ManyToOne // User 테이블과 N:1관계 맵핑
+    private User author;
+
+
 }

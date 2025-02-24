@@ -2,6 +2,7 @@ package com.BootJourney.Service;
 
 import com.BootJourney.Entity.Answer;
 import com.BootJourney.Entity.Question;
+import com.BootJourney.Entity.User;
 import com.BootJourney.Repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 public class AnswerService {
     private final AnswerRepository answerRepository;
 
-    public void create(Question question, String content) {
+    public void create(Question question, String content, User author) {
         Answer answer = new Answer();
         answer.setContent(content);
         answer.setCreateDate(LocalDateTime.now());

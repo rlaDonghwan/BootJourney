@@ -233,3 +233,52 @@ public class SecurityConfig {
 - 비크립트는 객체를 직접 new로 생성하는 방식보다는 PasswordEncoder 객체를 빈으로 등록하여 사용하는 것이 좋다. 왜냐하면 암호화 방식을 변경하면 비크립트패스워드인코더를 사용한 모든 프로그램을 일일이 찾아 다니며 수정해야하기 때문이다.
 
 
+### Spring Security 세션과 Principal의 관계 및 역할 정리
+
+1️⃣ Spring Security에서 세션(Session)이란?
+•	Spring Security는 로그인한 사용자의 인증 정보를 세션에 저장하여 관리함.
+•	사용자가 로그인하면 Spring Security가 자동으로 세션을 생성하고, 사용자 인증 정보를 유지함.
+•	기본적으로 세션을 통해 로그인 상태를 유지하고, 요청마다 사용자의 인증 상태를 확인함.
+
+2️⃣ SecurityContext와 Authentication의 역할
+•	**Spring Security의 핵심은 SecurityContext**이며, 현재 로그인한 사용자의 정보를 저장하고 있음.
+•	SecurityContext 내부에는 Authentication 객체가 존재함.
+•	Authentication 객체는 로그인한 사용자 정보를 담고 있으며, 사용자 인증 여부를 관리함.
+
+#### SecurityContext의 흐름
+1.	사용자가 로그인하면 Spring Security가 SecurityContext를 생성.
+2.	SecurityContext 내부에는 현재 로그인한 사용자의 Authentication 객체가 저장됨.
+3.	이후 사용자가 요청할 때마다 Spring Security가 SecurityContext를 참조하여 로그인 상태를 유지.
+
+3️⃣ Principal과 SecurityContext의 관계
+•	Principal은 SecurityContext 내부의 Authentication 객체에서 사용자 정보를 가져오는 역할을 함.
+•	즉, Principal은 로그인한 사용자의 정보를 쉽게 가져올 수 있도록 해주는 편리한 인터페이스.
+
+#### Principal의 역할
+
+역할	설명
+Principal.getName()	로그인한 사용자의 username(아이디) 반환
+Principal	현재 로그인한 사용자의 정보를 제공
+SecurityContext	현재 사용자의 인증(Authentication) 정보를 저장하는 컨텍스트
+Authentication	현재 로그인한 사용자의 정보(Principal), 권한(Role) 등을 포함
+
+4️⃣ Spring Security의 세션과 Principal의 동작 과정
+1.	사용자가 로그인 요청을 보냄.
+2.	Spring Security가 사용자를 인증(Authentication) 후, SecurityContext를 생성함.
+3.	SecurityContext 내부에 현재 로그인한 사용자의 Authentication 객체가 저장됨.
+4.	Authentication 객체 안에는 로그인한 사용자의 정보(Principal), 권한(Role) 등이 포함됨.
+5.	이후 요청이 들어오면, Spring Security가 SecurityContext를 참조하여 사용자의 로그인 상태를 확인함.
+6.	컨트롤러에서 Principal을 사용하면, SecurityContext에서 로그인된 사용자 정보를 쉽게 가져올 수 있음.
+
+5️⃣ Principal을 사용할 때의 장점
+
+-  SecurityContext를 직접 사용하지 않고 더 간단하게 로그인한 사용자 정보를 가져올 수 있음.
+-  컨트롤러에서 쉽게 현재 로그인한 사용자 정보를 확인할 수 있음.
+-  Spring Security와 자동 연동되므로 별도의 설정 없이 사용 가능.
+
+#### 최종 요약
+•	Spring Security는 로그인한 사용자의 정보를 SecurityContext에 저장하여 세션을 관리함.
+•	SecurityContext 내부에는 Authentication 객체가 존재하며, 로그인된 사용자 정보를 담고 있음.
+•	Principal은 SecurityContext에서 로그인한 사용자 정보를 쉽게 가져오는 역할을 함.
+•	컨트롤러에서 Principal을 사용하면, 로그인한 사용자의 username 등을 편리하게 가져올 수 있음.
+

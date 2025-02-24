@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.BootJourney.Entity.User;
 import com.BootJourney.Exception.DataNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,11 +37,12 @@ public class QuestionService {
 		}
 	}
 
-	public void create(String subject, String content) {
+	public void create(String subject, String content, User author) {
 		Question q = new Question();
 		q.setSubject(subject);
 		q.setContent(content);
 		q.setCreateDate(LocalDateTime.now());
+		q.setAuthor(author);
 		this.questionRepository.save(q);
 
 	}
