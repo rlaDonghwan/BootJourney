@@ -29,5 +29,7 @@ public class Question {
     @ManyToOne // User 테이블과 N:1관계 맵핑
     private User author;
 
+    private LocalDateTime modifyDate;
+
 
 }

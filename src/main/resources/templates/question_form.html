@@ -11,8 +11,12 @@
 <div layout:fragment="content" class="container">
     <h5 class="my-3 border-bottom pb-2">질문 등록</h5>
 
-    <form th:action="@{/question/create}" th:object="${questionForm}" method="post">
+    <form th:object="${questionForm}" method="post">
+        <!-- ✅ CSRF 토큰 포함 -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
+        <!-- ✅ 폼 전체 오류 메시지 -->
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
 
         <!-- 제목 필드 -->
         <div class="mb-3">

@@ -23,4 +23,8 @@ public class Answer {
     @ManyToOne
     private Question question;
 
+    @ManyToOne
+    private User author;
+
+    private LocalDateTime modifyDate;
 }
